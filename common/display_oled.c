@@ -31,35 +31,18 @@ __attribute__((weak)) void render_logo(void) {
     oled_write_raw_P(mb_logo, sizeof(mb_logo));
 }
 
-void render_small_mb_logo(void) {
-    static const char PROGMEM small_mb_logo[] = {
-        112, 112, 112, 0, 112, 112, 112, 0, 112, 112, 112, 0, 112, 112, 112, 0, 112, 112, 112, 0, 0, 119, 119, 119, 0, 112, 112, 112, 0, 112, 112, 112, 119, 119, 119, 0, 0, 0, 0, 0, 119, 119, 119, 0, 0, 0, 0, 0, 119, 119, 119, 0, 0, 119, 119, 119, 0, 112, 112, 112, 0, 119, 119, 119,
+void render_small_blocksi_logo(void) {
+    static const char PROGMEM blocksi_logo[] = {
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0xC0, 0xC0, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xC0, 0xC0, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFC, 0xF8, 0x01, 0x03, 0x87, 0x0E, 0x1C, 0x38, 0x70, 0xE0,
+        0xE0, 0x70, 0x38, 0x1C, 0x0E, 0x87, 0x03, 0x01, 0xF8, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x0F, 0x3C, 0x78, 0xF3, 0xE7, 0xCE, 0xFC, 0xF8, 0x00,
+        0x00, 0xF8, 0xFC, 0xCE, 0xE7, 0xF3, 0x78, 0x3C, 0x0F, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0x07, 0x0F, 0x00,
+        0x00, 0x0F, 0x07, 0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     };
-    oled_write_raw_P(small_mb_logo, sizeof(small_mb_logo));
-}
-
-static uint8_t last_hue;
-static uint8_t last_sat;
-static uint8_t last_val;
-static uint8_t last_mode;
-
-void render_rgb_info(void) {
-    last_hue  = rgb_matrix_get_hue();
-    last_sat  = rgb_matrix_get_sat();
-    last_val  = rgb_matrix_get_val();
-    last_mode = rgb_matrix_get_mode();
-    oled_set_cursor(0, 6);
-    oled_write("H:", false);
-    oled_write(depad_str(get_u16_str(last_hue, ' '), ' '), false);
-    oled_set_cursor(0, 7);
-    oled_write("S:", false);
-    oled_write_ln(depad_str(get_u16_str(last_sat, ' '), ' '), false);
-    oled_set_cursor(0, 8);
-    oled_write("V:", false);
-    oled_write_ln(depad_str(get_u16_str(last_val, ' '), ' '), false);
-    oled_set_cursor(0, 9);
-    oled_write("M:", false);
-    oled_write_ln(depad_str(get_u16_str(last_mode, ' '), ' '), false);
+    oled_write_raw_P(blocksi_logo, sizeof(blocksi_logo));
 }
 
 oled_rotation_t oled_init_kb(oled_rotation_t rotation) {
@@ -335,12 +318,7 @@ void oled_reinit_slave(void) {
     oled_write_ln(depad_str(get_u16_str(get_current_wpm(), ' '), ' '), false);
 
     oled_set_cursor(0, 4);
-    oled_write_ln("RGB", false);
-    render_spacer(3);
-    render_rgb_info();
-
-    oled_set_cursor(0, 13);
-    render_small_mb_logo();
+    render_small_blocksi_logo();
 }
 
 bool oled_task_kb(void) {
@@ -370,9 +348,6 @@ bool oled_task_kb(void) {
             }
         } else {
             static uint16_t last_wpm = 0;
-            if (rgb_matrix_get_hue() != last_hue || rgb_matrix_get_sat() != last_sat || rgb_matrix_get_val() != last_val || rgb_matrix_get_mode() != last_mode) {
-                render_rgb_info();
-            }
             if (last_wpm != get_current_wpm()) {
                 last_wpm = get_current_wpm();
                 oled_set_cursor(0, 2);
