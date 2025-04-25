@@ -201,18 +201,6 @@ const char *layer_string(uint32_t layer) {
         case 3:
             layer_str = "Three\0";
             break;
-        case 4:
-            layer_str = "Four\0";
-            break;
-        case 5:
-            layer_str = "Five\0";
-            break;
-        case 6:
-            layer_str = "Six\0";
-            break;
-        case 7:
-            layer_str = "Seven\0";
-            break;
         default:
             return get_u16_str(layer, ' ');
     }
@@ -289,20 +277,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 
 uint16_t loop_rate = 0;
 void     housekeeping_task_kb(void) {
-    if (is_keyboard_master()) {
-        static uint32_t     loop_count = 0;
-        static fast_timer_t loop_time  = 0;
-        loop_count++;
-        if (timer_elapsed_fast(loop_time) > 1000) {
-            loop_time  = timer_read_fast();
-            loop_rate  = loop_count > UINT16_MAX ? UINT16_MAX : loop_count;
-            loop_count = 0;
-            if (is_oled_on()) {
-                oled_set_cursor(0, 14);
-                oled_write(depad_str(get_u16_str(loop_rate, ' '), ' '), false);
-            }
-        }
-    }
     if (is_oled_on() && last_input_activity_elapsed() > OLED_TIMEOUT) {
         oled_off();
     }
