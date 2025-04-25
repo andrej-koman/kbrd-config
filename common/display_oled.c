@@ -22,15 +22,6 @@ static void render_spacer(uint8_t char_length) {
     }
 }
 
-__attribute__((weak)) void render_logo(void) {
-    static const char PROGMEM mb_logo[] = {
-        252, 254, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 31, 31, 31, 31,  31,  255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   227, 227, 227, 3,   227, 227, 227, 3,   227, 227, 227, 3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   3,   7,   254, 252, 255, 255, 255, 255, 255, 7,   7,   7,   7,   7,   255, 7,   7,   7,   7,   7,   255, 7,   7,   7,   7,   7,   255, 7,   7,   7,   7,   7,   255, 7,   7,   7,   7,   7,   255, 255, 255, 4,   4,   4,   4,   4,  255,
-        7,   7,   7,   7,   7,   255, 7,   7,   7,   7,   7,   255, 255, 255, 255, 255, 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,  0,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   224, 224, 224, 0,   238, 238, 238, 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   255, 255, 255, 255, 255, 255, 255, 65,  65,  65,  65,  65,  255, 255, 255, 255, 255, 255, 255, 65,  65,  65,  65,  65,  255, 255, 255, 255, 255, 255, 255, 65,  65,  65,  65,  65,  255, 255, 255, 65,  65,  65,  65,  65,  255, 127, 127, 127, 127, 127, 255, 65,  65,  65,  65,  65,  255, 255, 255, 255, 255, 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,
-        0,   0,   0,   0,   0,   0,   0,   0,   0,   14,  14,  14,  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  0,  0,  255, 255, 63,  127, 255, 255, 255, 240, 240, 240, 240, 240, 255, 255, 255, 255, 255, 255, 255, 240, 240, 240, 240, 240, 255, 255, 255, 255, 255, 255, 255, 240, 240, 240, 240, 240, 255, 255, 255, 240, 240, 240, 240, 240, 255, 240, 240, 240, 240, 240, 255, 240, 240, 240, 240, 240, 255, 255, 255, 255, 255, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 199, 199, 199, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 224, 127, 63,
-    };
-    oled_write_raw_P(mb_logo, sizeof(mb_logo));
-}
-
 void render_small_blocksi_logo(void) {
     static const char PROGMEM blocksi_logo[] = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0xC0, 0xC0, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -237,7 +228,7 @@ bool process_detected_host_os_kb(os_variant_t detected_os) {
 
 void keyboard_post_init_kb(void) {
     if (!is_keyboard_master()) {
-        render_logo();
+        render_small_blocksi_logo();
     } else {
         oled_set_cursor(0, 0);
         oled_write("Layer", false);
@@ -257,8 +248,10 @@ void keyboard_post_init_kb(void) {
         oled_write_ln("Wait", false);
 
         oled_set_cursor(0, 12);
-        oled_write_ln("Rate", false);
-        render_spacer(4);
+        oled_write_ln("WPM", false);
+        render_spacer(3);
+        oled_advance_page(false);
+        oled_write_ln(depad_str(get_u16_str(get_current_wpm(), ' '), ' '), false);
     }
     keyboard_post_init_user();
 }
@@ -275,24 +268,10 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     return process_record_user(keycode, record);
 };
 
-uint16_t loop_rate = 0;
 void     housekeeping_task_kb(void) {
     if (is_oled_on() && last_input_activity_elapsed() > OLED_TIMEOUT) {
         oled_off();
     }
-}
-
-void oled_reinit_slave(void) {
-    oled_init(OLED_ROTATION_270);
-    oled_clear();
-    oled_set_cursor(0, 0);
-    oled_write_ln("WPM", false);
-    render_spacer(3);
-    oled_advance_page(false);
-    oled_write_ln(depad_str(get_u16_str(get_current_wpm(), ' '), ' '), false);
-
-    oled_set_cursor(0, 4);
-    render_small_blocksi_logo();
 }
 
 bool oled_task_kb(void) {
@@ -301,7 +280,6 @@ bool oled_task_kb(void) {
     }
 
     static uint16_t last_keycode         = 0xFF;
-    static bool     oled_slave_init_done = false;
 
     if (is_keyboard_master()) {
         if (last_keycode != current_keycode) {
@@ -314,21 +292,14 @@ bool oled_task_kb(void) {
             }
             last_keycode = current_keycode;
         }
-    } else {
-        if (!oled_slave_init_done) {
-            if (timer_elapsed32(0) > 5000) {
-                oled_slave_init_done = true;
-                oled_reinit_slave();
-            }
-        } else {
-            static uint16_t last_wpm = 0;
-            if (last_wpm != get_current_wpm()) {
-                last_wpm = get_current_wpm();
-                oled_set_cursor(0, 2);
+        static uint16_t last_wpm = 0;
+        if (last_wpm != get_current_wpm()) {
+            last_wpm = get_current_wpm();
+            if(is_oled_on()) {
+                oled_set_cursor(0, 14);
                 oled_write_ln(depad_str(get_u16_str(last_wpm, ' '), ' '), false);
             }
         }
     }
-
     return false;
 }
