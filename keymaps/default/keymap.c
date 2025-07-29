@@ -10,7 +10,7 @@
 // Right-hand home row mods
 #define CTL_J RCTL_T(SI_J)
 #define SFT_K RSFT_T(SI_K)
-#define ALT_L LALT_T(SI_L)
+#define ALT_L RALT_T(SI_L)
 #define GUI_CCAR RGUI_T(SI_CCAR)
 
 // Layers
